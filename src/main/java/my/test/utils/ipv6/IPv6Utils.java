@@ -7,13 +7,7 @@ import java.util.regex.Pattern;
 public class IPv6Utils {
     private static String IPv6Split = ":";
     private static final int Len_IPv6Standard = 39;
-    private static String S0;
-
-    static {
-        char[] c0 = new char[4];
-        c0[3] = 48;
-        S0 = new String(c0);
-    }
+    private static String S0 = "0";
 
     private final static char[] LOWER_DIGITS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -87,12 +81,13 @@ public class IPv6Utils {
             int mag = Integer.SIZE - Integer.numberOfLeadingZeros(ii);
             char[] buf = new char[4];
             int charPos = Math.max(((mag + 3)) / 4, 1);
+            int count = charPos;
             int offset = 4 - charPos;
             do {
                 buf[offset + --charPos] = digits[ii & 15];
                 ii >>>= 4;
             } while (ii != 0 && charPos > 0);
-            items[i] = new String(buf);
+            items[i] = new String(buf, offset, count);
         }
         // 压缩连续的0
         int maxDiv = 0;

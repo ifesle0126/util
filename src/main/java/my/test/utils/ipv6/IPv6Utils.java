@@ -5,9 +5,10 @@ import sun.net.util.IPAddressUtil;
 import java.util.regex.Pattern;
 
 public class IPv6Utils {
+
     private static String IPv6Split = ":";
     private static final int Len_IPv6Standard = 39;
-    private static String S0 = "0";
+    private static final String S0 = "0";
 
     private final static char[] LOWER_DIGITS = {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -20,6 +21,9 @@ public class IPv6Utils {
 
     public static IPEnum classify(String IP) {
         if (IP == null || IP.length() < 1) {
+            return IPEnum.IllegalIP;
+        }
+        if (IP.length() > Len_IPv6Standard) {
             return IPEnum.IllegalIP;
         }
         if (IPAddressUtil.isIPv6LiteralAddress(IP)) {
@@ -40,7 +44,8 @@ public class IPv6Utils {
         if (IP == null || IP.length() < 1) {
             return IP;
         }
-        if (classify(IP) == IPEnum.IPv6Compress) {
+        IPEnum e = classify(IP);
+        if (e == IPEnum.IPv6Standard || e == IPEnum.IPv6Compress) {
             byte[] IPBytes = IPAddressUtil.textToNumericFormatV6(IP);
             return StandardIPv6(IPBytes, UPPER_DIGITS);
         } else {
@@ -52,7 +57,8 @@ public class IPv6Utils {
         if (IP == null || IP.length() < 1) {
             return IP;
         }
-        if (classify(IP) == IPEnum.IPv6Compress) {
+        IPEnum e = classify(IP);
+        if (e == IPEnum.IPv6Standard || e == IPEnum.IPv6Compress) {
             byte[] IPBytes = IPAddressUtil.textToNumericFormatV6(IP);
             return StandardIPv6(IPBytes, LOWER_DIGITS);
         } else {
@@ -106,6 +112,8 @@ public class IPv6Utils {
                 maxIndex = b;
                 maxDiv = e - b;
                 b = e + 1;
+            } else {
+                b = e;
             }
         }
         if (maxDiv != 0) {

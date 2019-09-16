@@ -19,6 +19,9 @@ public class IPv6Utils {
             'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     };
 
+    private final static Pattern p = Pattern.compile(
+            "^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+
     public static IPEnum classify(String IP) {
         if (IP == null || IP.length() < 1) {
             return IPEnum.IllegalIP;
@@ -33,7 +36,6 @@ public class IPv6Utils {
                 return IPEnum.IPv6Compress;
             }
         } else if (IPAddressUtil.isIPv4LiteralAddress(IP)) {
-            Pattern p = Pattern.compile("^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
             return p.matcher(IP).matches() ? IPEnum.IPv4 : IPEnum.IllegalIP;
         }
         return IPEnum.IllegalIP;
